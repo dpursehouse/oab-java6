@@ -470,9 +470,9 @@ JAVA_UPD=`echo ${DEB_VERSION} | cut -d'.' -f2 | cut -d'-' -f1`
 
 ncecho " [x] Getting releases download page "
 if [ "${JAVA_UPSTREAM}" == "sun-java6" ]; then
-    wget http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html -O /tmp/oab-download.html >> "$log" 2>&1 &
+    wget http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html -e http_proxy=localhost:3130 -O /tmp/oab-download.html >> "$log" 2>&1 &
 else
-    wget http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html -O /tmp/oab-download.html >> "$log" 2>&1 &
+    wget http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html -e http_proxy=localhost:3130 -O /tmp/oab-download.html >> "$log" 2>&1 &
 fi
 pid=$!;progress $pid
 
@@ -507,7 +507,7 @@ do
     COOKIES="oraclelicensejdk-${JAVA_VER}u${JAVA_UPD}-oth-JPR=accept-securebackup-cookie;gpw_e24=http://edelivery.oracle.com"
 
     ncecho " [x] Downloading ${JAVA_BIN} : ${DOWNLOAD_SIZE} "
-    wget --no-check-certificate --header="Cookie: ${COOKIES}" -c "${DOWNLOAD_URL}" -O ${WORK_PATH}/pkg/${JAVA_BIN} >> "$log" 2>&1 &
+    wget -e http_proxy=localhost:3130 --no-check-certificate --header="Cookie: ${COOKIES}" -c "${DOWNLOAD_URL}" -O ${WORK_PATH}/pkg/${JAVA_BIN} >> "$log" 2>&1 &
     pid=$!;progress_loop $pid
 
     ncecho " [x] Symlinking ${JAVA_BIN} "
@@ -523,7 +523,7 @@ else
 fi
 
 DOWNLOAD_INDEX="technetwork/java/javase/downloads/jce-${JAVA_VER}-download-${DOWNLOAD_INDEX_NO}.html"
-wget http://www.oracle.com/${DOWNLOAD_INDEX} -O /tmp/oab-download-jce.html >> "$log" 2>&1 &
+wget -e http_proxy=localhost:3130 http://www.oracle.com/${DOWNLOAD_INDEX} -O /tmp/oab-download-jce.html >> "$log" 2>&1 &
 pid=$!;progress $pid
 
 # Get JCE download URL, size, and cookies required for download
@@ -540,7 +540,7 @@ fi
 DOWNLOAD_SIZE=`grep ${JCE_POLICY} /tmp/oab-download-jce.html | cut -d'{' -f2 | cut -d',' -f2 | cut -d'"' -f4`
 
 ncecho " [x] Downloading ${JCE_POLICY} : ${DOWNLOAD_SIZE} "
-wget --no-check-certificate --header="Cookie: ${COOKIES}" -c "${DOWNLOAD_URL}" -O ${WORK_PATH}/pkg/${JCE_POLICY} >> "$log" 2>&1 &
+wget -e http_proxy=localhost:3130 --no-check-certificate --header="Cookie: ${COOKIES}" -c "${DOWNLOAD_URL}" -O ${WORK_PATH}/pkg/${JCE_POLICY} >> "$log" 2>&1 &
 pid=$!;progress_loop $pid
 
 ncecho " [x] Symlinking ${JCE_POLICY} "
